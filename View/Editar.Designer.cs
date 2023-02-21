@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Editar));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.cbProduto = new System.Windows.Forms.ComboBox();
@@ -59,7 +60,7 @@
             this.label1.ForeColor = System.Drawing.Color.White;
             this.label1.Location = new System.Drawing.Point(-3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(801, 90);
+            this.label1.Size = new System.Drawing.Size(806, 90);
             this.label1.TabIndex = 0;
             this.label1.Text = "Edição";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -80,6 +81,7 @@
             this.cbProduto.Name = "cbProduto";
             this.cbProduto.Size = new System.Drawing.Size(284, 23);
             this.cbProduto.TabIndex = 2;
+            this.cbProduto.SelectedIndexChanged += new System.EventHandler(this.cbProduto_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -293,6 +295,8 @@
             this.Controls.Add(this.cbProduto);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Editar";
             this.Text = "Editar";
             this.Load += new System.EventHandler(this.Editar_Load);

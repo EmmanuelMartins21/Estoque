@@ -4,19 +4,10 @@ namespace Estoque
 {
     public partial class Principal : Form
     {
+
         public Principal()
         {
             InitializeComponent();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -29,6 +20,12 @@ namespace Estoque
         {
             Cadastro cadastro = new Cadastro();
             cadastro.ShowDialog();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Consulta consulta = new Consulta();
+            consulta.ShowDialog();
         }
     }
 }

@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Principal));
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
             // label1
@@ -47,13 +48,17 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "Estoque!";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(201, 108);
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.ImageIndex = 1;
+            this.button1.ImageList = this.imageList1;
+            this.button1.Location = new System.Drawing.Point(317, 116);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(157, 133);
+            this.button1.Size = new System.Drawing.Size(157, 66);
             this.button1.TabIndex = 1;
             this.button1.Text = "Cadastrar";
             this.button1.UseVisualStyleBackColor = true;
@@ -61,9 +66,14 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(443, 108);
+            this.button2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.button2.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button2.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.ImageIndex = 0;
+            this.button2.ImageList = this.imageList1;
+            this.button2.Location = new System.Drawing.Point(317, 200);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(157, 133);
+            this.button2.Size = new System.Drawing.Size(157, 66);
             this.button2.TabIndex = 2;
             this.button2.Text = "Editar";
             this.button2.UseVisualStyleBackColor = true;
@@ -71,22 +81,26 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(201, 258);
+            this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button3.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button3.ImageIndex = 2;
+            this.button3.ImageList = this.imageList1;
+            this.button3.Location = new System.Drawing.Point(317, 284);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(157, 133);
+            this.button3.Size = new System.Drawing.Size(157, 66);
             this.button3.TabIndex = 3;
             this.button3.Text = "Consultar";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
-            // button4
+            // imageList1
             // 
-            this.button4.Location = new System.Drawing.Point(443, 258);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(157, 133);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "Vender";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Edit_Button.png");
+            this.imageList1.Images.SetKeyName(1, "Register_Button.png");
+            this.imageList1.Images.SetKeyName(2, "Search_Button.png");
             // 
             // Principal
             // 
@@ -94,12 +108,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(799, 433);
-            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Principal";
             this.Text = "Estoque";
             this.ResumeLayout(false);
@@ -112,6 +126,6 @@
         private Button button1;
         private Button button2;
         private Button button3;
-        private Button button4;
+        private ImageList imageList1;
     }
 }

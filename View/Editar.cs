@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,7 +18,7 @@ namespace Estoque.View
         string strSQL;           
         SqlCommand cmd = new SqlCommand();        
         ServiceConnection connService = new ServiceConnection();
-        SqlDataReader dr;   
+        SqlDataReader dr;
 
         public Editar()
         {
@@ -64,7 +65,7 @@ namespace Estoque.View
                 connService.conn.Open();
                 cmd.Connection = connService.conn;
 
-                if (txtCodigo != null)
+                if (string.IsNullOrEmpty(cbProduto.Text))
                 {
                     strSQL = "SELECT * FROM ESTOQUE WHERE ID_PRODUTO = '" + txtCodigo.Text + "'";
                     cmd.CommandText = strSQL;
@@ -81,7 +82,7 @@ namespace Estoque.View
                     if (!dr.IsClosed){ dr.Close(); }
                     connService.conn.Close();
                 }
-                else if(cbProduto != null)
+                else if(string.IsNullOrEmpty(txtCodigo.Text))
                 {
                     strSQL = "SELECT * FROM ESTOQUE WHERE NOME_PRODUTO = '" + cbProduto.Text + "'";
                     cmd.CommandText = strSQL;
@@ -145,7 +146,43 @@ namespace Estoque.View
 
         private void Editar_Load(object sender, EventArgs e)
         {
+            CarregaComboBox();
+        }
 
+        private void cbProduto_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtCodigo.Clear();
+        }
+
+        public void CarregaComboBox()
+        {
+            strSQL = "SELECT NOME_PRODUTO FROM ESTOQUE ORDER BY NOME_PRODUTO ASC;";
+            try
+            {
+                connService.conn.Open();
+                cmd.Connection = connService.conn;
+
+                cmd.CommandText = strSQL;
+                dr = cmd.ExecuteReader();
+
+                DataTable tableCat = new DataTable();
+                tableCat.Load(dr);
+
+                DataRow line = tableCat.NewRow();
+                line["NOME_PRODUTO"] = "";
+                tableCat.Rows.InsertAt(line, 0);
+
+                cbProduto.DataSource = tableCat;
+                cbProduto.ValueMember = "NOME_PRODUTO";
+                cbProduto.DisplayMember = "NOME_PRODUTO";
+
+                connService.conn.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocorreu um erro: {ex}");
+                connService.conn.Close();
+            }
         }
 
         public void ValidaDadosCadastro()
