@@ -162,7 +162,7 @@ namespace Estoque.View
                 connService.conn.Open();
 
                 //string de inserção no banco de dados
-                strSQL = "SELECT MAX(ID_PRODUTO) +1 FROM ESTOQUE";
+                strSQL = "SELECT MAX(ID_PRODUTO)+1 AS NextID FROM ESTOQUE";
                 cmd.Connection = connService.conn;
                 cmd.CommandText = strSQL;
                 dr = cmd.ExecuteReader();

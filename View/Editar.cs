@@ -9,14 +9,15 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Estoque.Services;
 namespace Estoque.View
 {
     public partial class Editar : Form
     {
-        decimal precoVenda = 0, precoTotal = 0;
-        string strSQL;           
-        SqlCommand cmd = new SqlCommand();        
+        decimal precoVenda, precoTotal;
+        string strSQL;
+        SqlCommand cmd = new SqlCommand();
         ServiceConnection connService = new ServiceConnection();
         SqlDataReader dr;
 
@@ -37,24 +38,7 @@ namespace Estoque.View
         private void button1_Click(object sender, EventArgs e)
         {
             //criar conexão com o banco para atualizar o produto
-            connService.conn.Open();
-            cmd.Connection = connService.conn;
-
-            MessageBox.Show("Produto Cadastrado!");
-
-            DialogResult retorno = MessageBox.Show("Deseja cadastrar outro produto?", "Cadastrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (retorno == DialogResult.Yes)
-            {
-                cbUnidadeMedida.ResetText();
-                mtbPrecoCusto.Clear();
-                mtbLucro.Clear();
-                txtProduto.Clear();
-                txtQuantidade.Clear();
-            }
-            else
-            {
-                Close();
-            }
+            AtualizaDadosDB();
         }
 
         public void ConsultaDadosDB()
@@ -79,10 +63,10 @@ namespace Estoque.View
                         dr.Read();
                         ConsultaProdutos();
                     }
-                    if (!dr.IsClosed){ dr.Close(); }
+                    if (!dr.IsClosed) { dr.Close(); }
                     connService.conn.Close();
                 }
-                else if(string.IsNullOrEmpty(txtCodigo.Text))
+                else if (string.IsNullOrEmpty(txtCodigo.Text))
                 {
                     strSQL = "SELECT * FROM ESTOQUE WHERE NOME_PRODUTO = '" + cbProduto.Text + "'";
                     cmd.CommandText = strSQL;
@@ -104,9 +88,9 @@ namespace Estoque.View
                 if (!dr.IsClosed) { dr.Close(); }
                 connService.conn.Close();
             }
-            catch (SqlException ex) 
-            { 
-                MessageBox.Show("Ocorreu um erro: " + ex.Message); 
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Ocorreu um erro: " + ex.Message);
             }
             finally
             {
@@ -116,15 +100,52 @@ namespace Estoque.View
 
         private void ConsultaProdutos()
         {
+            string precoCusto = dr["PRECO_CUSTO"].ToString().Replace(",","");
+            string lucro = dr["LUCRO_PRODUTO"].ToString();
+
+            //Trata a máscara de Preço Custo
+            if(precoCusto.Length < 2)
+            {
+                mtbPrecoCusto.Text = "0000" + precoCusto;
+            }
+            else if (precoCusto.Length < 3)
+            {
+                mtbPrecoCusto.Text = "000" + precoCusto;
+            }
+            else if (precoCusto.Length < 4)
+            {
+                mtbPrecoCusto.Text = "00" + precoCusto;
+            }
+            else if (precoCusto.Length < 5)
+            {
+                mtbPrecoCusto.Text = "0" + precoCusto;
+            }
+            else
+            {
+                mtbPrecoCusto.Text = precoCusto;
+            }
+
+            //Trata a máscara de Lucro
+            if (lucro.Length == 1)
+            {
+                mtbLucro.Text = "00" + lucro;
+            }
+            else if (lucro.Length == 2)
+            {
+                mtbLucro.Text = "0" + lucro;
+            }
+            else
+            {
+                mtbLucro.Text = lucro;
+            }
+
             txtCodigo.Text = dr["ID_PRODUTO"].ToString();
             txtProduto.Text = dr["NOME_PRODUTO"].ToString();
             txtQuantidade.Text = dr["QUANTIDADE_PRODUTO"].ToString();
             cbUnidadeMedida.Text = dr["UND_MEDIDA"].ToString();
             txtPrecoTotal.Text = "R$ " + dr["PRECO_TOTAL"].ToString();
             txtPrecoVenda.Text = "R$ " + dr["PRECO_VENDA"].ToString();
-            mtbPrecoCusto.Text = dr["PRECO_CUSTO"].ToString();
-            mtbLucro.Text = dr["LUCRO_PRODUTO"].ToString();           
-
+         
         }
 
         private void btnPesquisar_Click(object sender, EventArgs e)
@@ -134,8 +155,8 @@ namespace Estoque.View
                 ConsultaDadosDB();
             }
             catch (Exception ex)
-            { 
-                MessageBox.Show("Ocorreu um erro: " + ex); 
+            {
+                MessageBox.Show("Ocorreu um erro: " + ex);
             }
         }
 
@@ -185,7 +206,7 @@ namespace Estoque.View
             }
         }
 
-        public void ValidaDadosCadastro()
+        public void ValidaDadosEdicao()
         {
 
             if (mtbLucro.Text == "   %")
@@ -194,10 +215,11 @@ namespace Estoque.View
                 txtPrecoVenda.Clear();
                 return;
             }
+
             // Captura os dados digitados
             string nomeProduto = txtProduto.Text;
             int quantidade = Convert.ToInt32(txtQuantidade.Text);
-            decimal precoCusto = Convert.ToDecimal(mtbPrecoCusto.Text.Replace("R$ ", "").Trim());
+            decimal precoCusto = Convert.ToDecimal(mtbPrecoCusto.Text.Replace("R$", "").Trim());
             decimal lucro = Convert.ToDecimal(mtbLucro.Text.Replace("%", "").Trim());
             string unidadeMedida = cbUnidadeMedida.Text;
 
@@ -209,10 +231,81 @@ namespace Estoque.View
                 txtPrecoTotal.Text = "R$ " + precoTotal.ToString("0.00");
             }
             catch (Exception ex)
-            { 
-                MessageBox.Show("Ocorreu um erro: " + ex); 
+            {
+                MessageBox.Show("Ocorreu um erro: " + ex);
             }
 
+        }
+
+        private void mtbLucro_Leave(object sender, EventArgs e)
+        {
+            ValidaDadosEdicao();
+        }
+
+        private void mtbPrecoCusto_Leave(object sender, EventArgs e)
+        {
+            ValidaDadosEdicao();
+        }
+
+        private void txtQuantidade_Leave(object sender, EventArgs e)
+        {
+            ValidaDadosEdicao();
+        }
+
+        private void AtualizaDadosDB()
+        {
+            try
+            {
+                //criar conexão com o banco
+                connService.conn.Open();
+                cmd.Connection = connService.conn;
+
+                //string de update no banco de dados
+                strSQL = "UPDATE ESTOQUE SET NOME_PRODUTO = @nome_produto, QUANTIDADE_PRODUTO = @quantidade_produto," +
+                    "UND_MEDIDA = @und_medida, PRECO_CUSTO = @preco_custo, LUCRO_PRODUTO = @lucro_produto, PRECO_VENDA = @preco_venda," +
+                    "PRECO_TOTAL = @preco_total WHERE ID_PRODUTO = " + Convert.ToInt32(txtCodigo.Text);
+
+                cmd.CommandText = strSQL;
+
+                cmd.Parameters.AddWithValue(@"nome_produto", txtProduto.Text);
+                cmd.Parameters.AddWithValue(@"quantidade_produto", Convert.ToInt32(txtQuantidade.Text));
+                cmd.Parameters.AddWithValue(@"und_medida", cbUnidadeMedida.Text);
+                cmd.Parameters.AddWithValue(@"preco_custo", Convert.ToDecimal(mtbPrecoCusto.Text.Replace("R$ ", "").Trim()));
+                cmd.Parameters.AddWithValue(@"lucro_produto", Convert.ToInt32(mtbLucro.Text.Replace("%", "").Trim()));
+                cmd.Parameters.AddWithValue(@"preco_venda", precoVenda);
+                cmd.Parameters.AddWithValue(@"preco_total", precoTotal);
+
+                //Execução do comando
+                cmd.ExecuteNonQuery();
+
+                //Fecha conexão  com o banco de dados 
+                connService.conn.Close();
+
+                MessageBox.Show("Produto alterado!");
+
+                DialogResult retorno = MessageBox.Show("Deseja editar outro produto?", "Cadastrar", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (retorno == DialogResult.Yes)
+                {
+                    cbUnidadeMedida.ResetText();
+                    mtbPrecoCusto.Clear();
+                    mtbLucro.Clear();
+                    txtProduto.Clear();
+                    txtQuantidade.Clear();
+                }
+                else
+                {
+                    Close();
+                }
+
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Ocorreu um erro ao salvar: " + ex.Message);
+            }
+            finally
+            {
+                connService.conn.Close();
+            }
         }
     }
 }

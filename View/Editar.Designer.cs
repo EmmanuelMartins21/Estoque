@@ -169,6 +169,7 @@
             this.txtQuantidade.Size = new System.Drawing.Size(118, 23);
             this.txtQuantidade.TabIndex = 11;
             this.txtQuantidade.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtQuantidade.Leave += new System.EventHandler(this.txtQuantidade_Leave);
             // 
             // label7
             // 
@@ -208,11 +209,16 @@
             // 
             // mtbPrecoCusto
             // 
+            this.mtbPrecoCusto.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.mtbPrecoCusto.Location = new System.Drawing.Point(108, 257);
             this.mtbPrecoCusto.Mask = "$ 000.00";
             this.mtbPrecoCusto.Name = "mtbPrecoCusto";
+            this.mtbPrecoCusto.RejectInputOnFirstFailure = true;
+            this.mtbPrecoCusto.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.mtbPrecoCusto.Size = new System.Drawing.Size(100, 23);
             this.mtbPrecoCusto.TabIndex = 16;
+            this.mtbPrecoCusto.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.mtbPrecoCusto.Leave += new System.EventHandler(this.mtbPrecoCusto_Leave);
             // 
             // mtbLucro
             // 
@@ -224,6 +230,7 @@
             this.mtbLucro.Size = new System.Drawing.Size(126, 23);
             this.mtbLucro.TabIndex = 17;
             this.mtbLucro.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.mtbLucro.Leave += new System.EventHandler(this.mtbLucro_Leave);
             // 
             // txtPrecoVenda
             // 
